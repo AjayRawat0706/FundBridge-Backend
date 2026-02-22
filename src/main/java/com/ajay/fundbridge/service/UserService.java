@@ -4,8 +4,8 @@ import com.ajay.fundbridge.dto.ChangePasswordRequestDto;
 import com.ajay.fundbridge.dto.LoginRequestDto;
 import com.ajay.fundbridge.dto.UserRequestDTO;
 import com.ajay.fundbridge.dto.UserResponseDTO;
-import com.ajay.fundbridge.exception.EmailAlreadyExistException;
 import com.ajay.fundbridge.exception.InvalidCredentialsException;
+import com.ajay.fundbridge.exception.ResourceAlreadyExistException;
 import com.ajay.fundbridge.exception.ResourceNotFoundException;
 import com.ajay.fundbridge.mapper.UserMapper;
 import com.ajay.fundbridge.model.User;
@@ -24,7 +24,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     public UserResponseDTO createUser(UserRequestDTO userRequest) {
         if(userRepository.findByEmail(userRequest.getEmail()).isPresent()){
-          throw new EmailAlreadyExistException("Profile already present with this email");
+          throw new ResourceAlreadyExistException("Profile already present with this email");
         }
         User user=UserMapper.toUser(userRequest);
         user.setPassword(passwordEncoder.encode(user.getPassword()));

@@ -37,8 +37,8 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
-    @ExceptionHandler(EmailAlreadyExistException.class)
-    public ResponseEntity<Map<String,Object>>handleEmailAlreadyExist(EmailAlreadyExistException ex){
+    @ExceptionHandler(ResourceAlreadyExistException.class)
+    public ResponseEntity<Map<String,Object>>handleResourceAlreadyExist(ResourceAlreadyExistException ex){
         Map<String,Object>error=new HashMap<>();
         error.put("timestamp", LocalDateTime.now());
         error.put("status",409);
