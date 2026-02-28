@@ -55,4 +55,13 @@ public class GlobalExceptionHandler {
         error.put("message",ex.getMessage());
         return new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(FileDeleteException.class)
+    public ResponseEntity<Map<String,Object>>handleFileDelete(ResourceNotFoundException ex){
+        Map<String,Object>error=new HashMap<>();
+        error.put("timestamp", LocalDateTime.now());
+        error.put("status",500);
+        error.put("error",HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+        error.put("message",ex.getMessage());
+        return new ResponseEntity<>(error,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
