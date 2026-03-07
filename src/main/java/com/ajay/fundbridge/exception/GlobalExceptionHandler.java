@@ -64,4 +64,13 @@ public class GlobalExceptionHandler {
         error.put("message",ex.getMessage());
         return new ResponseEntity<>(error,HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<Map<String,Object>>HandleUnauthorized(UnauthorizedException ex){
+        Map<String,Object>error=new HashMap<>();
+        error.put("timestamp", LocalDateTime.now());
+        error.put("status",401);
+        error.put("error",HttpStatus.UNAUTHORIZED.getReasonPhrase());
+        error.put("message",ex.getMessage());
+        return new ResponseEntity<>(error,HttpStatus.UNAUTHORIZED);
+    }
 }
