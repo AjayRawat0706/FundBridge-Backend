@@ -1,7 +1,10 @@
 package com.ajay.fundbridge.controller;
 
+import com.ajay.fundbridge.dto.StartupFundingRequestDto;
+import com.ajay.fundbridge.dto.StartupFundingResponseDto;
 import com.ajay.fundbridge.dto.StartupRequestDto;
 import com.ajay.fundbridge.dto.StartupResponseDto;
+import com.ajay.fundbridge.service.StartupFundingService;
 import com.ajay.fundbridge.service.StartupService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -18,6 +21,7 @@ import java.util.UUID;
 @RequestMapping("/api/startups")
 public class StartupController {
     private final StartupService startupService;
+    private final StartupFundingService startupFundingService;
     @PostMapping
     public ResponseEntity<StartupResponseDto> addStartup(
             @Valid @RequestBody StartupRequestDto request,
@@ -56,5 +60,27 @@ public class StartupController {
     public ResponseEntity<List<StartupResponseDto>> getMyStartups(
             @RequestHeader("USER-ID") UUID userId) {
         return ResponseEntity.ok(startupService.getStartupsByOwner(userId));
+    }
+    @PostMapping("/funding")
+    public ResponseEntity<StartupFundingResponseDto>createFunding(
+            @Valid @RequestBody StartupFundingRequestDto request,
+            @RequestHeader("USER-ID")UUID userId){
+        StartupFundingResponseDto response=startupFundingService.createFunding(request,userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/funding/{startupId}")
+    public ResponseEntity<StartupFundingResponseDto>getFunding( @PathVariable UUID startupId){
+        StartupFundingResponseDto response=startupFundingService.getFunding(startupId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/funding/{startupId}")
+    public ResponseEntity<StartupFundingResponseDto>updateFunding(
+            @Valid @RequestBody StartupFundingRequestDto request,
+            @PathVariable UUID startupId,
+            @RequestHeader("USER-ID")UUID userId){
+        StartupFundingResponseDto response=startupFundingService.updateFunding(startupId,request,userId);
+        return ResponseEntity.ok(response);
     }
 }
