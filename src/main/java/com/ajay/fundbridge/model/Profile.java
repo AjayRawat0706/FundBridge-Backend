@@ -32,6 +32,8 @@ public class Profile {
   private String mobileNumber;
   @Column(name = "profile_img")
   private String profileImage;
+  @Column(name = "image_public_id")
+  private String imagePublicId;
   @CreationTimestamp
   private LocalDateTime createdAt;
   @UpdateTimestamp

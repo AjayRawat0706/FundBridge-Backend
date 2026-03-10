@@ -1,5 +1,6 @@
 package com.ajay.fundbridge.service;
 
+import com.ajay.fundbridge.dto.CloudinaryUploadResultDto;
 import com.ajay.fundbridge.dto.ProfileRequestDto;
 import com.ajay.fundbridge.dto.ProfileResponseDto;
 import com.ajay.fundbridge.exception.ResourceAlreadyExistException;
@@ -48,9 +49,10 @@ public class ProfileService {
         Profile profile = profileRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
 
-        String imageUrl = cloudinaryService.uploadProfileImage(file);
+        CloudinaryUploadResultDto imageResult = cloudinaryService.uploadProfileImage(file);
 
-        profile.setProfileImage(imageUrl);
+        profile.setProfileImage(imageResult.getUrl());
+        profile.setImagePublicId(imageResult.getPublicId());
         profileRepository.save(profile);
     }
     @Transactional
@@ -86,10 +88,9 @@ public class ProfileService {
         if (profile.getProfileImage() == null) {
             return;
         }
-
-        cloudinaryService.deleteImage(profile.getProfileImage());
-
+        cloudinaryService.deleteFile(profile.getImagePublicId());
         profile.setProfileImage(null);
+        profile.setImagePublicId(null);
         profileRepository.save(profile);
     }
 }

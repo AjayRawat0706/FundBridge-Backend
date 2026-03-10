@@ -1,5 +1,6 @@
 package com.ajay.fundbridge.service;
 
+import com.ajay.fundbridge.dto.CloudinaryUploadResultDto;
 import com.ajay.fundbridge.exception.FileDeleteException;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -15,7 +16,7 @@ public class CloudinaryService {
 
     private final Cloudinary cloudinary;
 
-    public String uploadProfileImage(MultipartFile file) {
+    public CloudinaryUploadResultDto uploadProfileImage(MultipartFile file) {
         try {
             Map uploadResult = cloudinary.uploader().upload(
                     file.getBytes(),
@@ -24,16 +25,43 @@ public class CloudinaryService {
                             "resource_type", "image"
                     )
             );
-            return uploadResult.get("secure_url").toString();
+            String url = uploadResult.get("secure_url").toString();
+            String publicId = uploadResult.get("public_id").toString();
+
+            return new CloudinaryUploadResultDto(url, publicId);
+
         } catch (Exception e) {
             throw new RuntimeException("Failed to upload image", e);
         }
     }
-    public void deleteImage(String publicId) {
+
+    public CloudinaryUploadResultDto uploadDocument(MultipartFile file) {
         try {
-            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+            Map uploadResult = cloudinary.uploader().upload(
+                    file.getBytes(),
+                    ObjectUtils.asMap(
+                            "folder", "fundbridge/startup-documents",
+                            "resource_type", "auto"
+                    )
+            );
+            String url = uploadResult.get("secure_url").toString();
+            String publicId = uploadResult.get("public_id").toString();
+            return new CloudinaryUploadResultDto(url, publicId);
         } catch (Exception e) {
-            throw new FileDeleteException("Failed to delete image");
+            throw new RuntimeException("Failed to upload document", e);
         }
     }
+
+    public void deleteFile(String publicId) {
+        try {
+            cloudinary.uploader().destroy(
+                    publicId,
+                    ObjectUtils.asMap("resource_type", "auto")
+            );
+        } catch (Exception e) {
+            throw new FileDeleteException("Failed to delete file");
+        }
+    }
+
+
 }

@@ -28,6 +28,9 @@ public class StartupDocument {
     @Column(nullable = false)
     private String fileUrl;
 
+    @Column(nullable = false)
+    private String publicId;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime uploadedAt;
