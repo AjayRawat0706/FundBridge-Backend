@@ -55,4 +55,35 @@ public class InvestorPreferenceService {
 
         investorStagePreferenceRepository.saveAll(stages);
     }
+
+    public InvestorPreferenceRequestDto getPreferences(UUID investorId){
+
+        InvestorPreference preference = investorPreferenceRepository
+                .findByInvestorId(investorId)
+                .orElse(null);
+
+        List<Integer> industries = investorIndustryPreferenceRepository
+                .findByInvestorId(investorId)
+                .stream()
+                .map(InvestorIndustryPreference::getIndustryId)
+                .toList();
+
+        List<Integer> stages = investorStagePreferenceRepository
+                .findByInvestorId(investorId)
+                .stream()
+                .map(InvestorStagePreference::getStageId)
+                .toList();
+
+        InvestorPreferenceRequestDto response = new InvestorPreferenceRequestDto();
+
+        if(preference != null){
+            response.setInvestmentMin(preference.getInvestmentMin());
+            response.setInvestmentMax(preference.getInvestmentMax());
+        }
+
+        response.setIndustryIds(industries);
+        response.setStageIds(stages);
+
+        return response;
+    }
 }
