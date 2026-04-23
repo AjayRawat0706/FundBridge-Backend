@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/users/pom.xml" />
         <option value="$PROJECT_DIR$/monolith/pom.xml" />
         <option value="$PROJECT_DIR$/investor/pom.xml" />
+        <option value="$PROJECT_DIR$/startup/pom.xml" />
       </list>
     </option>
   </component>

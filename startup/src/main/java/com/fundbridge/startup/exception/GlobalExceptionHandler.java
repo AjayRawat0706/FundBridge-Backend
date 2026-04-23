@@ -1,8 +1,5 @@
-package com.fundbridge.investor.exception;
+package com.fundbridge.startup.exception;
 
-import com.fundbridge.investor.exception.InvalidCredentialsException;
-import com.fundbridge.investor.exception.ResourceAlreadyExistException;
-import com.fundbridge.investor.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

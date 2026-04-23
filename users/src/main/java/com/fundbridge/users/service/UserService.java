@@ -40,6 +40,12 @@ public class UserService {
         }
         return UserMapper.toUserResponse(user);
     }
+    public UserResponseDTO getUser(UUID id){
+        System.out.println("service hitted");
+        User user =userRepository.findById(id)
+                   .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return UserMapper.toUserResponse(user);
+    }
     public void updatePassword(ChangePasswordRequestDto changePasswordRequestDto, UUID id){
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));

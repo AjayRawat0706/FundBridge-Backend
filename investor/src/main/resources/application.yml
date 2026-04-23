@@ -1,6 +1,6 @@
 spring:
   application:
-   name: investor
+    name: investor
 
   datasource:
     url: jdbc:postgresql://localhost:5432/fundbridge
@@ -16,3 +16,6 @@ spring:
       hibernate:
         format_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 8083
