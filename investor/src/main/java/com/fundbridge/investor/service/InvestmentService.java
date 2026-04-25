@@ -2,8 +2,10 @@ package com.fundbridge.investor.service;
 
 import com.fundbridge.investor.dto.InvestorPortfolioRequestDto;
 import com.fundbridge.investor.dto.InvestorPortfolioResponseDto;
+import com.fundbridge.investor.dto.StartupResponseDto;
 import com.fundbridge.investor.exception.ResourceAlreadyExistException;
 import com.fundbridge.investor.exception.ResourceNotFoundException;
+import com.fundbridge.investor.feign.StartupClient;
 import com.fundbridge.investor.mapper.InvestorPortfolioMapper;
 import com.fundbridge.investor.model.Investor;
 import com.fundbridge.investor.model.InvestorPortfolio;
@@ -20,11 +22,17 @@ import java.util.UUID;
 public class InvestmentService {
   private final InvestorPortfolioRepository investorPortfolioRepository;
   private final InvestorRepository investorRepository;
+  private final StartupClient startupClient;
   public InvestorPortfolioResponseDto addInvestment(UUID userId, InvestorPortfolioRequestDto request){
       Investor investor = investorRepository.findByUserId(userId)
               .orElseThrow(() -> new ResourceNotFoundException("Investor not found"));
 
-      //validate for startup when broken into microservices through interservice communication
+      StartupResponseDto startup;
+      try {
+          startup = startupClient.getStartupById(userId);
+      } catch (Exception e) {
+          throw new ResourceNotFoundException("User not registered");
+      }
 
       if(investorPortfolioRepository.existsByInvestorIdAndStartupId(investor.getId(), request.getStartupId())){
           throw new ResourceAlreadyExistException("Investment already exists for this startup");
@@ -43,7 +51,6 @@ public class InvestmentService {
               .toList();
   }
 
-  //this api will be called by startup service by interservice communication
   public List<InvestorPortfolioResponseDto>getInvestors(UUID startupId){
       return investorPortfolioRepository.findByStartupId(startupId).stream()
               .map(InvestorPortfolioMapper::toPortfolioResponse)

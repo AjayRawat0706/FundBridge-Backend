@@ -16,7 +16,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/investor")
 public class InvestorController {
-
  private final InvestorService investorService;
  @PostMapping
  public ResponseEntity<InvestorResponseDto> addInvestor(@Valid @RequestBody InvestorRequestDto request,

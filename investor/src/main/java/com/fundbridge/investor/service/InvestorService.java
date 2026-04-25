@@ -2,9 +2,11 @@ package com.fundbridge.investor.service;
 
 import com.fundbridge.investor.dto.InvestorRequestDto;
 import com.fundbridge.investor.dto.InvestorResponseDto;
+import com.fundbridge.investor.dto.UserResponseDTO;
 import com.fundbridge.investor.exception.ResourceAlreadyExistException;
 import com.fundbridge.investor.exception.ResourceNotFoundException;
 import com.fundbridge.investor.exception.UnauthorizedException;
+import com.fundbridge.investor.feign.UserClient;
 import com.fundbridge.investor.mapper.InvestorMapper;
 import com.fundbridge.investor.model.Investor;
 import com.fundbridge.investor.repository.InvestorPortfolioRepository;
@@ -19,9 +21,15 @@ import java.util.UUID;
 @AllArgsConstructor
 public class InvestorService {
     private final InvestorRepository investorRepository;
+    private final UserClient userClient;
     private final InvestorPortfolioRepository investorPortfolioRepository;
     public InvestorResponseDto addInvestor(InvestorRequestDto request, UUID userId){
-        //when it will be broken into microservices i will check for userid existence
+        UserResponseDTO user;
+        try {
+            user = userClient.getUserById(userId);
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("User not registered");
+        }
         if(investorRepository.findByUserId(userId).isPresent()){
             throw new ResourceAlreadyExistException("Investor already present");
         }

@@ -1,5 +1,6 @@
 package com.fundbridge.startup.service;
 
+import com.fundbridge.startup.dto.InvestorPreferenceRequestDto;
 import com.fundbridge.startup.dto.StartupRequestDto;
 import com.fundbridge.startup.dto.StartupResponseDto;
 import com.fundbridge.startup.dto.UserResponseDTO;
@@ -81,6 +82,28 @@ public class StartupService {
 
         return startupRepository.findByOwnerId(userId)
                 .stream()
+                .map(StartupMapper::toStartupResponse)
+                .toList();
+    }
+
+
+    public List<StartupResponseDto> filterStartupsByPreference(InvestorPreferenceRequestDto request) {
+
+        List<Integer> industries = (request.getIndustryIds() == null || request.getIndustryIds().isEmpty())
+                ? null
+                : request.getIndustryIds();
+
+        List<Integer> stages = (request.getStageIds() == null || request.getStageIds().isEmpty())
+                ? null
+                : request.getStageIds();
+
+        List<Startup> startups = startupRepository.filterStartups(
+                industries,
+                stages,
+                request.getInvestmentMin(),
+                request.getInvestmentMax()
+        );
+        return startups.stream()
                 .map(StartupMapper::toStartupResponse)
                 .toList();
     }

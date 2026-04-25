@@ -1,9 +1,6 @@
 package com.fundbridge.startup.controller;
 
-import com.fundbridge.startup.dto.StartupFundingRequestDto;
-import com.fundbridge.startup.dto.StartupFundingResponseDto;
-import com.fundbridge.startup.dto.StartupRequestDto;
-import com.fundbridge.startup.dto.StartupResponseDto;
+import com.fundbridge.startup.dto.*;
 import com.fundbridge.startup.service.StartupFundingService;
 import com.fundbridge.startup.service.StartupService;
 import jakarta.validation.Valid;
@@ -82,5 +79,12 @@ public class StartupController {
             @RequestHeader("USER-ID")UUID userId){
         StartupFundingResponseDto response=startupFundingService.updateFunding(startupId,request,userId);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/preference")
+    public ResponseEntity<List<StartupResponseDto>> filterStartups(
+            @RequestBody InvestorPreferenceRequestDto request
+    ) {
+        return ResponseEntity.ok(startupService.filterStartupsByPreference(request));
     }
 }
