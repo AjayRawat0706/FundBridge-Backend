@@ -17,11 +17,20 @@ import java.util.UUID;
 @RequestMapping("/api/profile")
 public class ProfileController {
     private final ProfileService profileService;
-   @PostMapping()
-    ResponseEntity<ProfileResponseDto>addProfile(@Valid @RequestBody ProfileRequestDto profileRequest , @RequestHeader ("USER-ID") UUID userId){
-      ProfileResponseDto response=profileService.newProfile(profileRequest,userId);
-      return ResponseEntity.status(HttpStatus.CREATED).body(response);
-   }
+//    private UUID getUserId() {
+//        return (UUID) SecurityContextHolder
+//                .getContext()
+//                .getAuthentication()
+//                .getPrincipal();
+//    }
+    @PostMapping()
+    public ResponseEntity<ProfileResponseDto> addProfile(
+            @Valid @RequestBody ProfileRequestDto profileRequest,
+            @RequestHeader("X-User-Id") UUID userId
+    ) {
+        ProfileResponseDto response = profileService.newProfile(profileRequest, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
    @GetMapping("/{userId}")
     ResponseEntity<ProfileResponseDto>getProfile(@PathVariable UUID userId){
        ProfileResponseDto profile=profileService.getProfile(userId);
@@ -29,11 +38,8 @@ public class ProfileController {
    }
 
     @PostMapping("/upload-photo")
-    public ResponseEntity<String> uploadProfilePhoto(
-            @RequestHeader ("USER-ID") UUID userId,
-            @RequestParam("file") MultipartFile file
-    ) {
-
+    public ResponseEntity<String> uploadProfilePhoto(@RequestParam("file") MultipartFile file,
+                                                     @RequestHeader("X-User-Id") UUID userId) {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("File is required");
         }
@@ -43,14 +49,14 @@ public class ProfileController {
     }
 
     @PutMapping()
-    ResponseEntity<ProfileResponseDto>updateProfile(@RequestHeader("USER-ID")UUID userId,
-                                                    @RequestBody ProfileRequestDto profileRequestDto){
-       ProfileResponseDto profile=profileService.updateProfile(userId,profileRequestDto);
-       return ResponseEntity.status(HttpStatus.CREATED).body(profile);
+    ResponseEntity<ProfileResponseDto>updateProfile(@RequestBody ProfileRequestDto profileRequestDto,
+                                                    @RequestHeader("X-User-Id") UUID userId){
+        ProfileResponseDto profile=profileService.updateProfile(userId,profileRequestDto);
+       return ResponseEntity.ok(profile);
     }
     @DeleteMapping("/profile-photo")
-    public ResponseEntity<String>removeProfilePhoto(@RequestHeader("USER-ID")UUID userId){
-       profileService.removeProfilePhoto(userId);
+    public ResponseEntity<String>removeProfilePhoto(@RequestHeader("X-User-Id") UUID userId){
+        profileService.removeProfilePhoto(userId);
        return ResponseEntity.ok("Profile image removed successfully");
     }
 }

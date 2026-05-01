@@ -20,7 +20,7 @@ public class StartupDocumentController {
     private final StartupDocumentService startupDocumentService;
     @PostMapping
     ResponseEntity<StartupDocumentResponseDto>addDocument(@Valid @ModelAttribute StartupDocumentRequestDto request,
-                                                          @RequestHeader ("USER-ID") UUID userId,
+                                                          @RequestHeader("X-User-Id") UUID userId,
                                                           @RequestParam("file") MultipartFile file){
         StartupDocumentResponseDto document=startupDocumentService.addDocument(request,file,userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(document);
@@ -35,7 +35,7 @@ public class StartupDocumentController {
 
     @DeleteMapping("/{documentId}")
     ResponseEntity<Void>deleteDocument(@PathVariable UUID documentId,
-                                       @RequestHeader ("USER-ID") UUID userId){
+                                       @RequestHeader("X-User-Id") UUID userId){
         startupDocumentService.deleteDocument(documentId,userId);
         return ResponseEntity.noContent().build();
     }
@@ -44,7 +44,7 @@ public class StartupDocumentController {
     ResponseEntity<StartupDocumentResponseDto>updateDocument(@PathVariable UUID documentId,
                                                              @ModelAttribute StartupDocumentRequestDto request,
                                                              @RequestParam("file") MultipartFile file,
-                                                             @RequestHeader ("USER-ID") UUID userId){
+                                                             @RequestHeader("X-User-Id") UUID userId){
         StartupDocumentResponseDto document=startupDocumentService.updateDocument(request,file,documentId,userId);
         return ResponseEntity.ok(document);
     }

@@ -4,7 +4,10 @@ import com.fundbridge.users.dto.ChangePasswordRequestDto;
 import com.fundbridge.users.dto.LoginRequestDto;
 import com.fundbridge.users.dto.UserRequestDTO;
 import com.fundbridge.users.dto.UserResponseDTO;
+import com.fundbridge.users.service.JwtService;
 import com.fundbridge.users.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,19 +22,42 @@ import java.util.UUID;
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
+    private final JwtService jwtService;
+
     @PostMapping("/register")
-    ResponseEntity<UserResponseDTO>addUser(@Valid @RequestBody UserRequestDTO userRequest){
-       UserResponseDTO user=userService.createUser(userRequest);
-       return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    public ResponseEntity<UserResponseDTO> register(
+            @Valid @RequestBody UserRequestDTO userRequest,
+            HttpServletResponse response) {
+        UserResponseDTO user = userService.createUser(userRequest);
+        String token = jwtService.generateToken(UUID.fromString(user.getId()));
+        Cookie cookie = new Cookie("access_token", token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        cookie.setMaxAge(60 * 60);
+        response.addCookie(cookie);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
     @PostMapping("/login")
-    ResponseEntity<UserResponseDTO>logIn(@Valid @RequestBody LoginRequestDto loginRequest){
+    public ResponseEntity<Void> login(
+            @RequestBody LoginRequestDto request,
+            HttpServletResponse response
+    ) {
+        String token = userService.loginAndGenerateToken(request);
 
-        UserResponseDTO user =userService.logInUser(loginRequest);
-        return ResponseEntity.ok().body(user);
+        Cookie cookie = new Cookie("access_token", token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        cookie.setMaxAge(60 * 60);
+
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok().build();
     }
     @GetMapping("/{id}")
     ResponseEntity<UserResponseDTO>getUser(@PathVariable UUID id){
+        System.out.println("this is controller id"+id);
         UserResponseDTO user= userService.getUser(id);
         return ResponseEntity.ok().body(user);
     }

@@ -17,13 +17,13 @@ public class InvestorPreferenceController {
 
     @PostMapping
     public ResponseEntity<String>savePreferences(@Valid @RequestBody InvestorPreferenceRequestDto request,
-                                                 @RequestHeader("USER-ID") UUID userId){
+                                                 @RequestHeader("X-User-Id") UUID userId){
         investorPreferenceService.savePreferences(userId,request);
         return ResponseEntity.ok("Preferences saved successfully");
     }
 
     @GetMapping
-    public ResponseEntity<InvestorPreferenceRequestDto>getPreferences(@RequestHeader("USER-ID") UUID userId){
+    public ResponseEntity<InvestorPreferenceRequestDto>getPreferences(@RequestHeader("X-User-Id") UUID userId){
         return ResponseEntity.ok(investorPreferenceService.getPreferences(userId));
     }
 }

@@ -22,6 +22,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
     public UserResponseDTO createUser(UserRequestDTO userRequest) {
         if(userRepository.findByEmail(userRequest.getEmail()).isPresent()){
           throw new ResourceAlreadyExistException("Profile already present with this email");
@@ -31,19 +32,23 @@ public class UserService {
         User newUser=userRepository.save(user);
         return UserMapper.toUserResponse(newUser);
     }
-
-    public UserResponseDTO logInUser(LoginRequestDto loginRequestDto){
-        User user=userRepository.findByEmail(loginRequestDto.getEmail())
+    public String loginAndGenerateToken(LoginRequestDto dto) {
+        User user = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
-        if(!passwordEncoder.matches(loginRequestDto.getPassword(),user.getPassword())){
+
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new InvalidCredentialsException("Invalid email or password");
         }
-        return UserMapper.toUserResponse(user);
+
+        return jwtService.generateToken(user.getId());
     }
+
+
     public UserResponseDTO getUser(UUID id){
         System.out.println("service hitted");
         User user =userRepository.findById(id)
                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        System.out.println(user);
         return UserMapper.toUserResponse(user);
     }
     public void updatePassword(ChangePasswordRequestDto changePasswordRequestDto, UUID id){

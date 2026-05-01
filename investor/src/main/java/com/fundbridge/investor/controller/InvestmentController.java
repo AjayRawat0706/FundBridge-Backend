@@ -19,13 +19,13 @@ public class InvestmentController {
 private final InvestmentService investmentService;
 @PostMapping
 public ResponseEntity<InvestorPortfolioResponseDto>createInvestment(@Valid @RequestBody InvestorPortfolioRequestDto request,
-                                                                    @RequestHeader("USER-ID") UUID userId){
+                                                                    @RequestHeader("X-User-Id") UUID userId){
     InvestorPortfolioResponseDto response=investmentService.addInvestment(userId,request);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
 }
 
 @GetMapping("/portfolio")
-public ResponseEntity<List<InvestorPortfolioResponseDto>>getInvestments( @RequestHeader("USER-ID") UUID userId){
+public ResponseEntity<List<InvestorPortfolioResponseDto>>getInvestments( @RequestHeader("X-User-Id") UUID userId){
     List<InvestorPortfolioResponseDto>investments=investmentService.getPortfolio(userId);
     return ResponseEntity.ok(investments);
 }

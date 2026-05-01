@@ -26,6 +26,7 @@ public class StartupService {
     private final UserClient userClient;
     public StartupResponseDto addStartup(StartupRequestDto request , UUID userId){
         UserResponseDTO user;
+
         try {
             user = userClient.getUserById(userId);
         } catch (Exception e) {

@@ -19,7 +19,7 @@ public class InvestorController {
  private final InvestorService investorService;
  @PostMapping
  public ResponseEntity<InvestorResponseDto> addInvestor(@Valid @RequestBody InvestorRequestDto request,
-                                                        @RequestHeader("USER-ID") UUID userId){
+                                                        @RequestHeader("X-User-Id") UUID userId){
      InvestorResponseDto response=investorService.addInvestor(request,userId);
      return ResponseEntity.status(HttpStatus.CREATED).body(response);
  }
@@ -37,13 +37,13 @@ public class InvestorController {
 @PutMapping("/{id}")
 public ResponseEntity<InvestorResponseDto>updateInvestor(@PathVariable UUID id,
                                                          @Valid @RequestBody InvestorRequestDto request,
-                                                         @RequestHeader("USER-ID") UUID userId){
+                                                         @RequestHeader("X-User-Id") UUID userId){
     InvestorResponseDto response=investorService.updateInvestor(id,userId,request);
     return ResponseEntity.ok(response);
 }
 
 @DeleteMapping("/{id}")
-public ResponseEntity<Void> deleteInvestor(@PathVariable UUID id, @RequestHeader("USER-ID") UUID userId) {
+public ResponseEntity<Void> deleteInvestor(@PathVariable UUID id,@RequestHeader("X-User-Id") UUID userId) {
      investorService.deleteInvestor(id,userId);
      return ResponseEntity.noContent().build();
 }

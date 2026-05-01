@@ -22,7 +22,7 @@ public class StartupController {
     @PostMapping
     public ResponseEntity<StartupResponseDto> addStartup(
             @Valid @RequestBody StartupRequestDto request,
-            @RequestHeader("USER-ID") UUID userId) {
+            @RequestHeader("X-User-Id") UUID userId) {
         StartupResponseDto response = startupService.addStartup(request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -40,7 +40,7 @@ public class StartupController {
     public ResponseEntity<StartupResponseDto> updateStartup(
             @PathVariable UUID id,
             @Valid @RequestBody StartupRequestDto request,
-            @RequestHeader("USER-ID") UUID userId) {
+            @RequestHeader("X-User-Id") UUID userId) {
 
         StartupResponseDto response = startupService.updateStartup(id, request, userId);
         return ResponseEntity.ok(response);
@@ -49,19 +49,19 @@ public class StartupController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStartup(
             @PathVariable UUID id,
-            @RequestHeader("USER-ID") UUID userId) {
+            @RequestHeader("X-User-Id") UUID userId) {
         startupService.deleteStartup(id, userId);
         return ResponseEntity.noContent().build();
     }
     @GetMapping("/my")
     public ResponseEntity<List<StartupResponseDto>> getMyStartups(
-            @RequestHeader("USER-ID") UUID userId) {
+            @RequestHeader("X-User-Id") UUID userId) {
         return ResponseEntity.ok(startupService.getStartupsByOwner(userId));
     }
     @PostMapping("/funding")
     public ResponseEntity<StartupFundingResponseDto>createFunding(
             @Valid @RequestBody StartupFundingRequestDto request,
-            @RequestHeader("USER-ID")UUID userId){
+            @RequestHeader("X-User-Id")UUID userId){
         StartupFundingResponseDto response=startupFundingService.createFunding(request,userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -76,7 +76,7 @@ public class StartupController {
     public ResponseEntity<StartupFundingResponseDto>updateFunding(
             @Valid @RequestBody StartupFundingRequestDto request,
             @PathVariable UUID startupId,
-            @RequestHeader("USER-ID")UUID userId){
+            @RequestHeader("X-User-Id")UUID userId){
         StartupFundingResponseDto response=startupFundingService.updateFunding(startupId,request,userId);
         return ResponseEntity.ok(response);
     }
