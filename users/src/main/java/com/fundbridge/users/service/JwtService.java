@@ -11,9 +11,10 @@ import java.util.UUID;
 public class JwtService {
     private final String SECRET = "very-very-secret-key-should-be-long";
 
-    public String generateToken(UUID userId) {
+    public String generateToken(UUID userId,String role) {
         return Jwts.builder()
                 .subject(userId.toString())
+                .claim("role", role)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour
                 .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()))

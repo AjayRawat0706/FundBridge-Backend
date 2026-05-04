@@ -1,6 +1,7 @@
 package com.fundbridge.startup.controller;
 
 import com.fundbridge.startup.dto.*;
+import com.fundbridge.startup.exception.UnauthorizedException;
 import com.fundbridge.startup.service.StartupFundingService;
 import com.fundbridge.startup.service.StartupService;
 import jakarta.validation.Valid;
@@ -41,7 +42,6 @@ public class StartupController {
             @PathVariable UUID id,
             @Valid @RequestBody StartupRequestDto request,
             @RequestHeader("X-User-Id") UUID userId) {
-
         StartupResponseDto response = startupService.updateStartup(id, request, userId);
         return ResponseEntity.ok(response);
     }

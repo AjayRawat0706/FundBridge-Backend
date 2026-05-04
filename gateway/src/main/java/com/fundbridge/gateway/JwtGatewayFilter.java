@@ -38,9 +38,10 @@ public class JwtGatewayFilter implements GlobalFilter {
         }
 
         UUID userId = jwtService.extractUserId(token);
-
+        String role = jwtService.extractRole(token);
         ServerHttpRequest modifiedRequest = request.mutate()
                 .header("X-User-Id", userId.toString())
+                .header("X-User-Role","ROLE_" + role.toUpperCase())
                 .build();
 
         return chain.filter(exchange.mutate().request(modifiedRequest).build());

@@ -39,16 +39,13 @@ public class UserService {
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new InvalidCredentialsException("Invalid email or password");
         }
-
-        return jwtService.generateToken(user.getId());
+        return jwtService.generateToken(user.getId(), String.valueOf(user.getRole()));
     }
 
 
     public UserResponseDTO getUser(UUID id){
-        System.out.println("service hitted");
         User user =userRepository.findById(id)
                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        System.out.println(user);
         return UserMapper.toUserResponse(user);
     }
     public void updatePassword(ChangePasswordRequestDto changePasswordRequestDto, UUID id){

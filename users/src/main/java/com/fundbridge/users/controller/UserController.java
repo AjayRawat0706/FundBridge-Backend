@@ -29,7 +29,7 @@ public class UserController {
             @Valid @RequestBody UserRequestDTO userRequest,
             HttpServletResponse response) {
         UserResponseDTO user = userService.createUser(userRequest);
-        String token = jwtService.generateToken(UUID.fromString(user.getId()));
+        String token = jwtService.generateToken(UUID.fromString(user.getId()),user.getRole());
         Cookie cookie = new Cookie("access_token", token);
         cookie.setHttpOnly(true);
         cookie.setSecure(false);

@@ -26,6 +26,9 @@ public class JwtService {
         return UUID.fromString(subject);
     }
 
+    public String extractRole(String token) {
+        return extractAllClaims(token).get("role", String.class);
+    }
     public boolean validateToken(String token) {
         try {
             extractAllClaims(token);
