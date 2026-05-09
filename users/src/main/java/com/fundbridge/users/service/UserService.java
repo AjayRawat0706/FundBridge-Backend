@@ -1,9 +1,6 @@
 package com.fundbridge.users.service;
 
-import com.fundbridge.users.dto.ChangePasswordRequestDto;
-import com.fundbridge.users.dto.LoginRequestDto;
-import com.fundbridge.users.dto.UserRequestDTO;
-import com.fundbridge.users.dto.UserResponseDTO;
+import com.fundbridge.users.dto.*;
 import com.fundbridge.users.exception.InvalidCredentialsException;
 import com.fundbridge.users.exception.ResourceAlreadyExistException;
 import com.fundbridge.users.exception.ResourceNotFoundException;
@@ -32,14 +29,14 @@ public class UserService {
         User newUser=userRepository.save(user);
         return UserMapper.toUserResponse(newUser);
     }
-    public String loginAndGenerateToken(LoginRequestDto dto) {
+    public UserResponseDTO login (LoginRequestDto dto) {
         User user = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new InvalidCredentialsException("Invalid email or password");
         }
-        return jwtService.generateToken(user.getId(), String.valueOf(user.getRole()));
+        return UserMapper.toUserResponse(user);
     }
 
 
@@ -57,6 +54,27 @@ public class UserService {
          }
          user.setPassword(passwordEncoder.encode(changePasswordRequestDto.getNewPassword()));
          userRepository.save(user);
+    }
+
+    public AuthResponse refreshAccessToken(String refreshToken) {
+
+        if (refreshToken == null || !jwtService.validateToken(refreshToken)) {
+            throw new InvalidCredentialsException("Invalid refresh token");
+        }
+
+        UUID userId = jwtService.extractUserId(refreshToken);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        String accessToken =
+                jwtService.generateToken(user.getId(),
+                        user.getRole().toString());
+
+        String newRefreshToken =
+                jwtService.generateRefreshToken(user.getId());
+
+        return new AuthResponse(accessToken, newRefreshToken);
     }
 
 }

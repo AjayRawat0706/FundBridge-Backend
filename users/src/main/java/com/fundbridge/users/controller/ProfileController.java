@@ -17,12 +17,7 @@ import java.util.UUID;
 @RequestMapping("/api/profile")
 public class ProfileController {
     private final ProfileService profileService;
-//    private UUID getUserId() {
-//        return (UUID) SecurityContextHolder
-//                .getContext()
-//                .getAuthentication()
-//                .getPrincipal();
-//    }
+
     @PostMapping()
     public ResponseEntity<ProfileResponseDto> addProfile(
             @Valid @RequestBody ProfileRequestDto profileRequest,

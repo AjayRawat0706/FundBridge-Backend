@@ -31,4 +31,27 @@ public class JwtService {
 
         return UUID.fromString(subject);
     }
+
+    public String generateRefreshToken(UUID userId) {
+        return Jwts.builder()
+                .subject(userId.toString())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 7)) // 7 days
+                .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
+                .compact();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser()
+                    .verifyWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
+                    .build()
+                    .parseSignedClaims(token);
+
+            return true;
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

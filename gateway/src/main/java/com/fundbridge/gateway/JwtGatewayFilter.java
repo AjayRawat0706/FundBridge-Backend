@@ -26,7 +26,7 @@ public class JwtGatewayFilter implements GlobalFilter {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getURI().getPath();
 
-        if (path.startsWith("/api/users/login") || path.startsWith("/api/users/register")) {
+        if (path.startsWith("/api/users/login") || path.startsWith("/api/users/register") || path.startsWith("/api/users/refresh")) {
             return chain.filter(exchange);
         }
 

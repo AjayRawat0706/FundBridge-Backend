@@ -10,7 +10,7 @@ public class UserMapper {
         User user=new User();
         user.setEmail(userRequest.getEmail());
         user.setPassword(userRequest.getPassword());
-        user.setRole(userRequest.getRole().equals("startup")?Role.STARTUP:Role.INVESTOR);
+        user.setRole(userRequest.getRole().toLowerCase().equals("startup")?Role.STARTUP:Role.INVESTOR);
         return user;
     }
     public static UserResponseDTO toUserResponse(User user){
