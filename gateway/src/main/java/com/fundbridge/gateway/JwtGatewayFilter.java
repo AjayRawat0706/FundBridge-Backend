@@ -26,7 +26,15 @@ public class JwtGatewayFilter implements GlobalFilter {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getURI().getPath();
 
-        if (path.startsWith("/api/users/login") || path.startsWith("/api/users/register") || path.startsWith("/api/users/refresh")) {
+        if (
+                path.startsWith("/api/users/login")
+                        || path.startsWith("/api/users/register")
+                        || path.startsWith("/api/users/refresh")
+
+                        || path.startsWith("/v3/api-docs")
+                        || path.startsWith("/swagger-ui")
+                        || path.startsWith("/webjars")
+        ){
             return chain.filter(exchange);
         }
 
@@ -39,14 +47,14 @@ public class JwtGatewayFilter implements GlobalFilter {
 
         UUID userId = jwtService.extractUserId(token);
         String role = jwtService.extractRole(token);
+
         ServerHttpRequest modifiedRequest = request.mutate()
                 .header("X-User-Id", userId.toString())
-                .header("X-User-Role","ROLE_" + role.toUpperCase())
+                .header("X-User-Role", "ROLE_" + role.toUpperCase())
                 .build();
 
         return chain.filter(exchange.mutate().request(modifiedRequest).build());
     }
-
     private String extractToken(ServerHttpRequest request) {
         HttpCookie cookie = request.getCookies().getFirst("access_token");
         return cookie != null ? cookie.getValue() : null;

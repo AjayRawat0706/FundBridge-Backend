@@ -5,19 +5,62 @@ spring:
   cloud:
     gateway:
       routes:
+
         - id: user-service
           uri: http://localhost:8081
           predicates:
-            - Path=/api/users/**, /api/profile/**
+            - Path=/api/users/**,/api/profile/**
+
+        - id: users-swagger
+          uri: http://localhost:8081
+          predicates:
+            - Path=/users/v3/api-docs
+          filters:
+            - SetPath=/v3/api-docs
 
         - id: startup-service
           uri: http://localhost:8082
           predicates:
-            - Path=/api/startups/**, /api/documents/**
+            - Path=/api/startups/**,/api/documents/**
+
+        - id: startup-swagger
+          uri: http://localhost:8082
+          predicates:
+            - Path=/startup/v3/api-docs
+          filters:
+            - SetPath=/v3/api-docs
+
 
         - id: investor-service
           uri: http://localhost:8083
           predicates:
-            - Path=/api/investor/** , /api/investment , /api/investors/preferences
+            - Path=/api/investor/**,/api/investment/**,/api/investors/preferences/**
+
+        - id: investor-swagger
+          uri: http://localhost:8083
+          predicates:
+            - Path=/investor/v3/api-docs
+          filters:
+            - SetPath=/v3/api-docs
+
+springdoc:
+  api-docs:
+    enabled: true
+
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+
+    urls:
+      - name: Users Service
+        url: /users/v3/api-docs
+
+      - name: Startup Service
+        url: /startup/v3/api-docs
+
+      - name: Investor Service
+        url: /investor/v3/api-docs
+
 server:
   port: 8080
