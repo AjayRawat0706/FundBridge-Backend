@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.UUID;
 
-@FeignClient(name = "startup-service", url = "http://localhost:8081")
+@FeignClient(name = "startup-service", url = "${services.startup.url}")
 public interface StartupClient {
     @GetMapping("/api/startups/{id}")
-    StartupResponseDto getStartupById(@PathVariable("id") UUID userId);
+    StartupResponseDto getStartupById(@PathVariable("id") UUID startupId);
 }

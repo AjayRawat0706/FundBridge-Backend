@@ -4,6 +4,7 @@ import com.fundbridge.users.dto.*;
 import com.fundbridge.users.exception.InvalidCredentialsException;
 import com.fundbridge.users.exception.ResourceAlreadyExistException;
 import com.fundbridge.users.exception.ResourceNotFoundException;
+import com.fundbridge.users.exception.UnauthorizedException;
 import com.fundbridge.users.mapper.UserMapper;
 import com.fundbridge.users.model.User;
 import com.fundbridge.users.repository.UserRepository;
@@ -45,7 +46,11 @@ public class UserService {
                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return UserMapper.toUserResponse(user);
     }
-    public void updatePassword(ChangePasswordRequestDto changePasswordRequestDto, UUID id){
+    public void updatePassword(ChangePasswordRequestDto changePasswordRequestDto, UUID id, UUID authenticatedUserId){
+        if (!id.equals(authenticatedUserId)) {
+            throw new UnauthorizedException("You can change only your own password");
+        }
+
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 

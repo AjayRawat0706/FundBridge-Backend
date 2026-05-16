@@ -3,6 +3,7 @@ package com.fundbridge.gateway;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -10,8 +11,11 @@ import java.util.UUID;
 
 @Service
 public class JwtService {
-    private final String SECRET = "very-very-secret-key-should-be-long";
-    private final SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
+    private final SecretKey key;
+
+    public JwtService(@Value("${app.jwt.secret}") String secret) {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    }
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()

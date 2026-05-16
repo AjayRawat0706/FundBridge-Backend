@@ -27,11 +27,10 @@ public class InvestmentService {
       Investor investor = investorRepository.findByUserId(userId)
               .orElseThrow(() -> new ResourceNotFoundException("Investor not found"));
 
-      StartupResponseDto startup;
       try {
-          startup = startupClient.getStartupById(userId);
+          startupClient.getStartupById(request.getStartupId());
       } catch (Exception e) {
-          throw new ResourceNotFoundException("User not registered");
+          throw new ResourceNotFoundException("Startup not found");
       }
 
       if(investorPortfolioRepository.existsByInvestorIdAndStartupId(investor.getId(), request.getStartupId())){

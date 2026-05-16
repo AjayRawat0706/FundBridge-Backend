@@ -1,17 +1,22 @@
 spring:
+  config:
+    import:
+      - optional:file:.env[.properties]
+      - optional:file:../.env[.properties]
+
   application:
     name: startup
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/fundbridge
-    username: ajay
-    password: ajay
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: ${JPA_DDL_AUTO}
+    show-sql: ${JPA_SHOW_SQL}
     properties:
       hibernate:
         format_sql: true
@@ -28,3 +33,12 @@ springdoc:
 server:
   port: 8082
   forward-headers-strategy: framework
+
+services:
+  users:
+    url: ${USERS_SERVICE_URL}
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}

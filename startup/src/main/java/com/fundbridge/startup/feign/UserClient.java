@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.UUID;
 
-@FeignClient(name = "user-service", url = "http://localhost:8081")
+@FeignClient(name = "user-service", url = "${services.users.url}")
 public interface UserClient {
     @GetMapping("/api/users/{id}")
     UserResponseDTO getUserById(@PathVariable("id") UUID userId);
