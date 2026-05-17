@@ -180,23 +180,3 @@ fundbridge/
   docker-compose.yml
   .env.example
 ```
-
-## Resume Highlights
-
-- Designed and implemented a Spring Boot microservices backend for a startup-investor marketplace.
-- Built JWT-based authentication with refresh tokens and HTTP-only cookie handling.
-- Implemented service-to-service communication using OpenFeign.
-- Added API Gateway routing and centralized authentication checks.
-- Modeled startup, investor, funding, document, profile, and portfolio domains with JPA.
-- Improved security by externalizing secrets and removing hardcoded credentials.
-
-## Future Improvements
-
-- Add Testcontainers-based integration tests.
-- Add Flyway or Liquibase database migrations.
-- Dockerize all Spring Boot services.
-- Add CI pipeline for build and test verification.
-- Add investor-startup recommendation scoring.
-- Add refresh token persistence and revocation.
-- Add pagination and sorting for list APIs.
-- Add admin moderation workflows for startup verification.
